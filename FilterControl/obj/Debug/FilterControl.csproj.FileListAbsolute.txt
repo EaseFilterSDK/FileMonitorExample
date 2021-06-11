@@ -1,0 +1,4 @@
+L:\github\FileMonitorExample\Release\FilterControl.dll
+L:\github\FileMonitorExample\Release\FilterControl.pdb
+L:\github\FileMonitorExample\FileMonitorExample\FilterControl\obj\Debug\FilterControl.dll
+L:\github\FileMonitorExample\FileMonitorExample\FilterControl\obj\Debug\FilterControl.pdb
