@@ -5,3 +5,7 @@ File Monitor Filter Driver SDK is a kernel-mode component that runs as part of t
 ![File Monitor](https://www.easefilter.com/images/MonitorFilter.png)
 
 This C# example creates a filter rule to watch the directory specified at run time. The component is set to watch for all file change in the directory. If a file was changed, the file name, file change type, user name, process name will be printed to the console. The component also is set to watch the file open and file read IO, the IO was triggered, the file open and file read information will be printed to the console.
+
+Here is the output from the file monitor example.
+
+![File Monitor output](https://www.easefilter.com/Images/MonitorConsole.png)
