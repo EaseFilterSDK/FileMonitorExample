@@ -1,8 +1,0 @@
-L:\github\FileMonitorExample\FileMonitorExample\FileMonitorConsole\bin\Debug\FileMonitorConsole.exe.config
-L:\github\FileMonitorExample\FileMonitorExample\FileMonitorConsole\bin\Debug\FileMonitorConsole.exe
-L:\github\FileMonitorExample\FileMonitorExample\FileMonitorConsole\bin\Debug\FileMonitorConsole.pdb
-L:\github\FileMonitorExample\FileMonitorExample\FileMonitorConsole\bin\Debug\FilterControl.dll
-L:\github\FileMonitorExample\FileMonitorExample\FileMonitorConsole\bin\Debug\FilterControl.pdb
-L:\github\FileMonitorExample\FileMonitorExample\FileMonitorConsole\obj\x86\Debug\FileMonitorConsole.csprojResolveAssemblyReference.cache
-L:\github\FileMonitorExample\FileMonitorExample\FileMonitorConsole\obj\x86\Debug\FileMonitorConsole.exe
-L:\github\FileMonitorExample\FileMonitorExample\FileMonitorConsole\obj\x86\Debug\FileMonitorConsole.pdb
