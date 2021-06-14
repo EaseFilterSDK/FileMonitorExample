@@ -10,3 +10,5 @@ This C# example creates a filter rule to watch the directory specified at run ti
 Here is the output from the file monitor example.
 
 ![File Monitor output](https://www.easefilter.com/Images/MonitorConsole.png)
+
+[Read more about file monitor example](https://www.easefilter.com/Forums_Files/FileMonitor.htm)
