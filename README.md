@@ -6,7 +6,7 @@ The File Monitor Filter Driver SDK is a kernel-mode component that runs as part 
 ## File I/O Monitor
 The file I/O monitor can audit file access and change in Windows in Real-Time. With the file monitor you can monitor the file activities on file system level, capture file open, create, overwrite, read, write, query file information, set file information, query security information, set security information, file rename, file delete, directory browsing and file close I/O requests. You can create the file access log, you will know who, when, what files were accessed. You can get comprehensive control and visibility over users and data by tracking and monitoring all the user & file activities, permission changes, storage capacity and generate real-time audit reports.
 
-### Monitor the file changed events by registering the file change events.
+### Monitor the file changed I/O by registering the file change events.
 
 You can get the notification when the managed files were changed by registering the file change events:
 
@@ -17,7 +17,7 @@ You can get the notification when the managed files were changed by registering 
 -  **NotifyFileSecurityWasChanged**: Fires this event when the file's security was changed after the file handle closed.
 -  **NotifyFileInfoWasChanged**: Fires this event when the file's information was changed after the file handle closed.
 
-### Monitor the file I/O by registering the I/O callback notification event.
+### Monitor all the file I/O by registering the I/O callback notification events.
 
 You can register the file I/O events to monitor the file access I/O in the file filter rule. By registering the specific I/O events, you can get file I/O information in real time.
 
