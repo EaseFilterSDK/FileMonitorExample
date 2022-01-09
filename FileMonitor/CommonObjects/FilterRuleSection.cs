@@ -604,7 +604,7 @@ namespace EaseFilter.CommonObjects
                         case FilterAPI.EncryptionMethod.ENCRYPT_FILE_WITH_KEY_AND_IV_FROM_SERVICE:
                             {
                                 //with this setting, to open or create encrypted file, it will request the encryption key and iv from the user mode callback service.
-                                fileFilter.EnableEncryptKeyandIVFromService = true;
+                                fileFilter.EnableEncryptionKeyFromService = true;
                                 break;
                             }
                     }

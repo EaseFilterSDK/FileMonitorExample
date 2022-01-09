@@ -265,6 +265,10 @@ namespace EaseFilter.FilterControl
             /// send the event when the write to USB was blocked.
             /// </summary>
             FILTER_SEND_DENIED_USB_WRITE_EVENT = 0x00010016,
+            /// <summary>
+            /// send process information before it was terminiated.
+            /// </summary>
+            FILTER_SEND_PRE_TERMINATE_PROCESS_INFO = 0x00010017,
 
         }
 
@@ -1271,7 +1275,7 @@ namespace EaseFilter.FilterControl
         /// <param name="registerIO">the specific I/Os you want to monitor</param>
         /// <returns></returns>
         [DllImport("FilterAPI.dll", SetLastError = true)]
-        public static extern bool RegisterMoinitorIOToFilterRule(
+        public static extern bool RegisterMonitorIOToFilterRule(
         [MarshalAs(UnmanagedType.LPWStr)]string filterMask,
         ulong registerIO);
 
@@ -1630,9 +1634,14 @@ namespace EaseFilter.FilterControl
             /// </summary>
             DENY_NEW_PROCESS_CREATION = 0x00000001,
             /// <summary>
-            /// send the denied the process creation event when new process was blocked if the flag is on
+            /// if this flag is enabled, it will send the notification when the new process creation was blocked.	
             /// </summary>
             ENABLE_SEND_PROCESS_DENIED_EVENT = 0x00000002,
+            /// <summary>
+            /// send the callback reqeust before the process is going to be terminated.
+            /// you can block the process termination in the callback function.
+            /// </summary>
+            PROCESS_PRE_TERMINATION_REQUEST = 0x00000004,
             /// <summary>
             /// Get a notification when a new process is being created.
             /// </summary>
@@ -1980,6 +1989,32 @@ namespace EaseFilter.FilterControl
              byte[] encryptionKey,
              uint ivLength,
              byte[] iv);
+
+        /// <summary>
+        /// Decrypt the encrypted file at offset and length to a buffer array.
+        /// </summary>
+        /// <param name="encryptedFileName">The encrypted file name</param>
+        /// <param name="keyLength">the number of the bytes of the encryption key</param>
+        /// <param name="encryptionKey">the encryption key byte array</param>
+        /// <param name="ivLength">the lenght of the iv key, set it to 0 if the AES header was embedded.</param>
+        /// <param name="iv">the iv key, set it to null if the AES header was embedded.</param>
+        /// <param name="offset">the offset which the decryption will start</param>
+        /// <param name="bytesToDecrypt">the number of bytes to decrypt</param>
+        /// <param name="decryptedBuffer">the decrypted buffer array to receive the decrypted data, 
+        /// the buffer size must be greater or equal than the bytesToDecrypt</param>
+        /// <param name="bytesDecrypted">the length of the return decrytped buffer</param>
+        /// <returns></returns>
+        [DllImport("FilterAPI.dll", SetLastError = true)]
+        public static extern bool AESDecryptBytes(
+             [MarshalAs(UnmanagedType.LPWStr)]string encryptedFileName,
+             uint keyLength,
+             byte[] encryptionKey,
+             uint ivLength,
+             byte[] iv,
+             long offset,
+             int bytesToDecrypt,
+             byte[] decryptedBuffer,
+             ref int bytesDecrypted);
 
         /// <summary>
         /// Set the AES Data to the encrypted file
