@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("EaseFilter Technologies")]
 [assembly: AssemblyProduct("EaseFilter CommonObjects")]
-[assembly: AssemblyCopyright("Copyright ©  2020 EaseFilter Technologies")]
+[assembly: AssemblyCopyright("Copyright ©  2024 EaseFilter Technologies")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,7 +31,7 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("5.0.5.1003")]
+[assembly: AssemblyVersion("5.4.4.3001")]
 //[assembly: AssemblyVersion("2.1.1.*")]
 ////[assembly: AssemblyFileVersion("2.1.1.*")]
 

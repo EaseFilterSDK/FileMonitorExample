@@ -140,7 +140,7 @@ namespace EaseFilter.FilterControl
             /// </summary>
             ENABLE_ADD_MESSAGE_TO_FILE = 0x00000010,
             /// <summary>
-            /// the encrypted file's meta data was embeded in the reparse point tag.
+            /// the encrypted file's meta data was embedded in the reparse point tag.
             /// </summary>
             ENCRYPT_FILE_WITH_REPARSE_POINT_TAG = 0x00000020,
             /// <summary>
@@ -148,7 +148,7 @@ namespace EaseFilter.FilterControl
             /// </summary>
             REQUEST_ENCRYPT_KEY_AND_IV_FROM_SERVICE = 0x00000040,
             /// <summary>
-            /// for control filter, if it is enabled, the control filte rulle will be applied in boot time.
+            /// for control filter, if it is enabled, the control filter rule will be applied in boot time.
             /// </summary>
             ENABLE_PROTECTION_IN_BOOT_TIME = 0x00000080,
             /// <summary>
@@ -160,7 +160,7 @@ namespace EaseFilter.FilterControl
             /// </summary>
             ENABLE_SEND_DATA_BUFFER = 0x00000200,
             /// <summary>
-            /// if it is enabled, it will reopen the file when rehydration of the stub file.
+            /// if it is enabled, it will reopen the file during rehydration of the stub file.
             /// </summary>
             ENABLE_REOPEN_FILE_ON_REHYDRATION = 0x00000400,
             /// <summary>
@@ -242,7 +242,7 @@ namespace EaseFilter.FilterControl
             /// </summary>
             FILTER_SEND_PROCESS_CREATION_INFO = 0x00010008,
             /// <summary>
-            /// send the process termination ifnormation
+            /// send the process termination information
             /// </summary>
             FILTER_SEND_PROCESS_TERMINATION_INFO = 0x00010009,
             /// <summary>
@@ -250,7 +250,7 @@ namespace EaseFilter.FilterControl
             /// </summary>
             FILTER_SEND_THREAD_CREATION_INFO = 0x0001000a,
             /// <summary>
-            /// send the thread termination ifnormation
+            /// send the thread termination information
             /// </summary>
             FILTER_SEND_THREAD_TERMINATION_INFO = 0x0001000b,
             /// <summary>
@@ -258,7 +258,7 @@ namespace EaseFilter.FilterControl
             /// </summary>
             FILTER_SEND_PROCESS_HANDLE_INFO = 0x0001000c,
             /// <summary>
-            /// send the thread handle operations ifnormation
+            /// send the thread handle operations information
             /// </summary>
             FILTER_SEND_THREAD_HANDLE_INFO = 0x0001000d,
             /// <summary>
@@ -280,7 +280,7 @@ namespace EaseFilter.FilterControl
             /// <summary>
             /// send the event when the process creation was blocked by the config setting.
             /// </summary>
-            FILTER_SEND_DENIED_PROCESS_EVENT = 0x00010012,
+            FILTER_SEND_DENIED_PROCESS_CREATION_EVENT = 0x00010012,
             /// <summary>
             /// send the event when the registry access was blocked by the config setting.
             /// </summary>
@@ -621,7 +621,7 @@ namespace EaseFilter.FilterControl
             /// <summary>
             /// Allow the file open to access the file's security information.
             /// </summary>
-            ALLOW_OPEN_WTIH_ACCESS_SYSTEM_SECURITY = 0x00000010,
+            ALLOW_OPEN_WITH_ACCESS_SYSTEM_SECURITY = 0x00000010,
             /// <summary>
             /// Allow the file open for read access.
             /// </summary>
@@ -761,7 +761,7 @@ namespace EaseFilter.FilterControl
         public struct MessageSendData
         {
             /// <summary>
-            ///the verification number which verifiys the data structure integerity.
+            ///the verification number which verifies the data structure integerity.
             /// </summary>
             public uint VerificationNumber;
             /// <summary>
@@ -1379,7 +1379,7 @@ namespace EaseFilter.FilterControl
 
         /// <summary>
         /// Get sha256 hash of the file, you need to allocate the 32 bytes array to get the sha256 hash.
-        /// hashBytesLength is the input byte array length, and the outpou lenght of the hash.
+        /// hashBytesLength is the input byte array length, and the outpout length of the hash.
         /// </summary>
         /// <param name="fileName"></param>
         /// <param name="hashBytes"></param>
@@ -1658,7 +1658,7 @@ namespace EaseFilter.FilterControl
         /// </summary>
         /// <param name="processNameLength">The length of the process name string in bytes</param>
         /// <param name="processName">The process name to be filtered, all processes if it is '*' </param>
-        /// <param name="processId">set the processId if you want filter with id instead of the process name</param>
+        /// <param name="processId">set the processId if you want to filter by id instead of the process name</param>
         /// <param name="userNameLength">the user name length if you want to filter the user name</param>
         /// <param name="userName">the user name filter mask</param>
         /// <param name="registryKeyNameLength">set the registry key name filter if you want to filter by the key name</param>
@@ -1746,7 +1746,7 @@ namespace EaseFilter.FilterControl
             /// </summary>
             ENABLE_SEND_PROCESS_DENIED_EVENT = 0x00000002,
             /// <summary>
-            /// send the callback reqeust before the process is going to be terminated.
+            /// send the callback request before the process is going to be terminated.
             /// you can block the process termination in the callback function.
             /// </summary>
             PROCESS_PRE_TERMINATION_REQUEST = 0x00000004,
@@ -1755,7 +1755,7 @@ namespace EaseFilter.FilterControl
             /// </summary>
             PROCESS_CREATION_NOTIFICATION = 0x00000100,
             /// <summary>
-            ///get a notification when a process was termiated 
+            ///get a notification when a process was terminated 
             /// </summary>
             PROCESS_TERMINATION_NOTIFICATION = 0x00000200,
             /// <summary>
@@ -1768,9 +1768,9 @@ namespace EaseFilter.FilterControl
             /// </summary>
             THREAD_CREATION_NOTIFICATION = 0x00000800,
             /// <summary>
-            /// get a notification when a thread was termiated 
+            /// get a notification when a thread was terminated 
             /// </summary>
-            THREAD_TERMINIATION_NOTIFICATION = 0x00001000,
+            THREAD_TERMINATION_NOTIFICATION = 0x00001000,
             /// <summary>
             /// get a notification for thread handle operations, when a handle for a thread
             /// is being created or duplicated.

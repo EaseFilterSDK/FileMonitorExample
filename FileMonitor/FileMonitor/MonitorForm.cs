@@ -248,10 +248,6 @@ namespace FileMonitor
             System.Diagnostics.Process.Start("https://blog.easefilter.com/file-monitor-demo-step-by-step/");
         }
 
-        private void toolStripButton_ApplyTrialKey_Click(object sender, EventArgs e)
-        {
-         
-        }
 
     }
 }

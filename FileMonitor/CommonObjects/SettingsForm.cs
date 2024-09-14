@@ -34,10 +34,6 @@ namespace EaseFilter.CommonObjects
         {
             InitializeComponent();
             InitOptionForm();
-
-            string computerId = FilterAPI.GetComputerId().ToString();
-
-            this.Text += "    ComputerId:" + computerId;
         }
 
         private void InitOptionForm()

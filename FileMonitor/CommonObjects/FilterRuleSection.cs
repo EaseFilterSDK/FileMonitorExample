@@ -676,6 +676,12 @@ namespace EaseFilter.CommonObjects
                                 break;
                             }
                     }
+
+                    if( Type == 1)// (FilterRuleType.EncryptionOnRead )
+                    {
+                        //encrypt file on the read
+                        AccessFlag &= ~(uint)FilterAPI.AccessFlag.DISABLE_ENCRYPT_DATA_ON_READ;
+                    }
                 }
 
                 return fileFilter;

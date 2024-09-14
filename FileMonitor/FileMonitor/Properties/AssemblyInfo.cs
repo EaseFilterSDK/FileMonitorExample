@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("FileMonitor")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Monitor File I/O Demo Application")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("EaseFilter Technologies")]
-[assembly: AssemblyProduct("FileMonitor")]
-[assembly: AssemblyCopyright("Copyright ©  2017 EaseFilter Technologies")]
+[assembly: AssemblyProduct("EaseFilter_FileMonitor.exe")]
+[assembly: AssemblyCopyright("Copyright ©  EaseFilter Technologies")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,6 +31,6 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("4.5.9.3003")]
-//[assembly: AssemblyVersion("1.0.*")]
-//[assembly: AssemblyFileVersion("1.0.*.*")]
+[assembly: AssemblyVersion("5.2.4.1001")]
+//[assembly: AssemblyFileVersion("1.0.0.0")]
+

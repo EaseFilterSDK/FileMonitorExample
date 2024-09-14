@@ -30,12 +30,12 @@ namespace EaseFilter.FilterControl
         public event EventHandler<EncryptEventArgs> OnFilterRequestEncryptKey;
 
         /// <summary>
-        /// if the encryption was enabled, this is the encryption key will be used for the encrytped file.
+        /// if the encryption was enabled, this is the encryption key that will be used for the encrypted file.
         /// </summary>
         byte[] encryptionKey = null;
 
         /// <summary>
-        /// generate encryptio key with this passphrase
+        /// generate encryption key with this passphrase
         /// </summary>
         string encryptionPassPhrase = string.Empty;
 
@@ -129,7 +129,7 @@ namespace EaseFilter.FilterControl
 
         /// <summary>
         /// This feature is to encrypt the data on the read when the encryption was enabled, encrypt new file was disabled.
-        /// the file won't be encrypted in the loca disk, i.e. encrypt the file before it was sent out of your folder.
+        /// the file won't be encrypted in the local disk, i.e. encrypt the file before it was sent out of your folder.
         /// </summary>
         public bool EnableEncryptionOnTheGo
         {

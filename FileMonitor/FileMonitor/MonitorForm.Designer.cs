@@ -83,7 +83,6 @@ namespace FileMonitor
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton_UnitTest = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton_Help = new System.Windows.Forms.ToolStripButton();
-            this.listView_Info = new FileMonitor.FastListView();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -109,7 +108,7 @@ namespace FileMonitor
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -209,7 +208,7 @@ namespace FileMonitor
             this.toolStripButton_UnitTest.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_UnitTest.Image")));
             this.toolStripButton_UnitTest.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_UnitTest.Name = "toolStripButton_UnitTest";
-            this.toolStripButton_UnitTest.Size = new System.Drawing.Size(113, 22);
+            this.toolStripButton_UnitTest.Size = new System.Drawing.Size(112, 22);
             this.toolStripButton_UnitTest.Text = "MonitorUnitTest";
             this.toolStripButton_UnitTest.Click += new System.EventHandler(this.toolStripButton_UnitTest_Click);
             // 
@@ -222,26 +221,11 @@ namespace FileMonitor
             this.toolStripButton_Help.Text = "Help";
             this.toolStripButton_Help.Click += new System.EventHandler(this.toolStripButton_Help_Click);
             // 
-            // listView_Info
-            // 
-            this.listView_Info.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView_Info.FullRowSelect = true;
-            this.listView_Info.HoverSelection = true;
-            this.listView_Info.LabelEdit = true;
-            this.listView_Info.Location = new System.Drawing.Point(0, 49);
-            this.listView_Info.Name = "listView_Info";
-            this.listView_Info.ShowItemToolTips = true;
-            this.listView_Info.Size = new System.Drawing.Size(974, 457);
-            this.listView_Info.TabIndex = 2;
-            this.listView_Info.UseCompatibleStateImageBehavior = false;
-            this.listView_Info.View = System.Windows.Forms.View.Details;
-            // 
             // MonitorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(974, 506);
-            this.Controls.Add(this.listView_Info);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));

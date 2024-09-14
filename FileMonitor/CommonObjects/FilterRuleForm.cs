@@ -80,6 +80,7 @@ namespace EaseFilter.CommonObjects
             if (GlobalConfig.filterType == FilterAPI.FilterType.MONITOR_FILTER)
             {
                 button_ControlSettings.Visible = false;
+                button_ProcessFilterRule.Visible = false;
             }
         }
 

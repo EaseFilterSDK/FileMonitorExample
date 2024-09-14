@@ -72,11 +72,19 @@ namespace EaseFilter.FilterControl
         {
 
             ProcessEventArgs processEventArgs = new ProcessEventArgs(messageSend);
-            if (messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_SEND_DENIED_PROCESS_EVENT)
+            if (messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_SEND_DENIED_PROCESS_CREATION_EVENT)
             {
                 if (null != NotifyProcessWasBlocked)
                 {
-                    processEventArgs.EventName = "ProcessCreationWasBlocked";
+                    processEventArgs.EventName = "NewProcessCreationWasBlocked";
+                    NotifyProcessWasBlocked(this, processEventArgs);
+                }
+            }
+            else if (messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_SEND_DENIED_PROCESS_TERMINATED_EVENT)
+            {
+                if (null != NotifyProcessWasBlocked)
+                {
+                    processEventArgs.EventName = "ProcessTerminationWasBlocked";
                     NotifyProcessWasBlocked(this, processEventArgs);
                 }
             }
@@ -192,7 +200,7 @@ namespace EaseFilter.FilterControl
                 {
                     case (uint)FilterAPI.FilterCommand.FILTER_SEND_PROCESS_CREATION_INFO:
                         {
-                            Description = "ParentPid:" + ParentProcessId + ";CreatingPid:" + CreatingProcessId + ";CreatingTheadId:" + CreatingThreadId
+                            Description = "ParentPid:" + ParentProcessId + ";CreatingPid:" + CreatingProcessId + ";CreatingThreadId:" + CreatingThreadId
                                 + ";FileOpenNameAvailable:" + FileOpenNameAvailable + ";CommandLine:" + CommandLine;
 
                             break;

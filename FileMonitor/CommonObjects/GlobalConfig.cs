@@ -14,6 +14,7 @@
 //     either express or implied.  
 //
 ///////////////////////////////////////////////////////////////////////////////
+///
 
 using System;
 using System.Collections.Generic;
@@ -197,7 +198,7 @@ namespace EaseFilter.CommonObjects
 
                 string computerId = FilterAPI.GetComputerId().ToString();
 
-                version ="  Version:" + version +  "   ComputerId:" + computerId;
+                version ="  Version:" + version;
             }
             catch (Exception ex)
             {
@@ -209,7 +210,6 @@ namespace EaseFilter.CommonObjects
 
         public static void Stop()
         {
-           
             isRunning = false;
             stopEvent.Set();
             EventManager.Stop();           
@@ -533,18 +533,21 @@ namespace EaseFilter.CommonObjects
             {
                 //Purchase a license key with the link: http://www.easefilter.com/Order.htm
                 //Email us to request a trial key: info@easefilter.com //free email is not accepted.
-                string licenseKey = "";
 
                 if (string.IsNullOrEmpty(licenseKey))
                 {
-                    System.Windows.Forms.MessageBox.Show("You don't have a valid license key, Please contact support@easefilter.com to get a trial key.", "LicenseKey", 
+                    System.Windows.Forms.MessageBox.Show("You don't have a valid license key, Please contact support@easefilter.com to get a trial key.", "LicenseKey",
                         System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
                 }
-			  
-              
-				return licenseKey;
+
+
+                return licenseKey;
             }
-            
+            set
+            {
+                licenseKey = value;
+                ConfigSetting.Set("licenseKey", value.ToString());
+            }
          }
 
          public static long ExpireTime

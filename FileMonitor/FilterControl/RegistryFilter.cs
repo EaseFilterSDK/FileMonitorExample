@@ -1139,8 +1139,13 @@ namespace EaseFilter.FilterControl
             RegCallbackClass = (FilterAPI.RegCallbackClass)messageSend.MessageType;
             InfoClass = messageSend.InfoClass;
 
-            if (messageSend.Status == (uint)NtStatus.Status.Success)
+            if (messageSend.Status != (uint)NtStatus.Status.Success)
             {
+                NtStatus.Status status = (NtStatus.Status)messageSend.Status;
+                description = "Registry access notification class " + RegCallbackClass.ToString() + " failed, status: " + status.ToString();
+            }
+            else
+            { 
                 switch (RegCallbackClass)
                 {
                     case FilterAPI.RegCallbackClass.Reg_Pre_Create_KeyEx:
