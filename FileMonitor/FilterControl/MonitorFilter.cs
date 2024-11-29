@@ -44,7 +44,7 @@ namespace EaseFilter.FilterControl
         /// <summary>
         /// Fires this event after a write file IO was returned.
         /// </summary>
-        OnFileWrite = 0x0000a800,
+        OnFileWrite = 0x0002a800,
         /// <summary>
         /// Fires this event after a query file size IO was returned.
         /// </summary>
@@ -86,7 +86,7 @@ namespace EaseFilter.FilterControl
         /// <summary>
         /// Fires this event after set file network info IO was returned
         /// </summary>
-        OnSetFileNetworkInfo = 0x0002000000000000,
+        OnSetFileNetworkInfo = 0x0020000000000000,
         /// <summary>
         /// Fires this event after the move or rename file IO was returned.
         /// </summary>

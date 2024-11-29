@@ -49,11 +49,11 @@ namespace EaseFilter.FilterControl
         /// <summary>
         /// Fires this event before the file write IO was going down to the file system.
         /// </summary>
-        OnPreFileWrite = 0x00005400,
+        OnPreFileWrite = 0x00015400,
         /// <summary>
         /// Fires this event after the file write IO was returned from the file system.
         /// </summary>
-        OnPostFileWrite = 0x0000a800,
+        OnPostFileWrite = 0x0002a800,
         /// <summary>
         /// Fires this event before the query file size IO was going down to the file system.
         /// </summary>

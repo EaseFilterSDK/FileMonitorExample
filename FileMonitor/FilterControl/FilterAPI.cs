@@ -1682,6 +1682,45 @@ namespace EaseFilter.FilterControl
             uint filterRuleId);
 
         /// <summary>
+        /// Add exclude process name to the registry filter rule.
+        /// </summary>
+        /// <param name="processNameFilterMask">the registry filter rule process name filter mask</param>
+        /// <param name="registryKeyNameFilterMask">the registry filter rule registry key filter mask</param>
+        /// <param name="excludeProcessNameMask">the exclude process name mask</param>
+        /// <returns></returns>
+        [DllImport("FilterAPI.dll", SetLastError = true)]
+        public static extern bool AddExcludeProcessNameToRegistryFilterRule(
+        [MarshalAs(UnmanagedType.LPWStr)] string processNameFilterMask,
+        [MarshalAs(UnmanagedType.LPWStr)] string registryKeyNameFilterMask,
+        [MarshalAs(UnmanagedType.LPWStr)] string excludeProcessNameMask);
+
+        /// <summary>
+        /// Add exclude user name to the registry filter rule.
+        /// </summary>
+        /// <param name="processNameFilterMask">the registry filter rule process name filter mask</param>
+        /// <param name="registryKeyNameFilterMask">the registry filter rule registry key name filter mask</param>
+        /// <param name="excludeUserNameMask">the exclude user name mask</param>
+        /// <returns></returns>
+        [DllImport("FilterAPI.dll", SetLastError = true)]
+        public static extern bool AddExcludeUserNameToRegistryFilterRule(
+        [MarshalAs(UnmanagedType.LPWStr)] string processNameFilterMask,
+        [MarshalAs(UnmanagedType.LPWStr)] string registryKeyNameFilterMask,
+        [MarshalAs(UnmanagedType.LPWStr)] string excludeUserNameMask);
+
+        /// <summary>
+        /// Add exclude key name to the registry filter rule.
+        /// </summary>
+        /// <param name="processNameFilterMask">the registry filter rule process name filter mask</param>
+        /// <param name="registryKeyNameFilterMask">the registry filter rule registry key name filter mask</param>
+        /// <param name="excludeKeyNameMask">the key user name mask</param>
+        /// <returns></returns>
+        [DllImport("FilterAPI.dll", SetLastError = true)]
+        public static extern bool AddExcludeKeyNameToRegistryFilterRule(
+        [MarshalAs(UnmanagedType.LPWStr)] string processNameFilterMask,
+        [MarshalAs(UnmanagedType.LPWStr)] string registryKeyNameFilterMask,
+        [MarshalAs(UnmanagedType.LPWStr)] string excludeKeyNameMask);
+
+        /// <summary>
         /// Add registry access control filter entry with process name, if process name filter mask matches the proces,
         /// it will set the access flag to the process.
         /// </summary>
@@ -1792,6 +1831,28 @@ namespace EaseFilter.FilterControl
         [MarshalAs(UnmanagedType.LPWStr)]string processNameMask,
         uint controlFlag,
         uint filterRuleId );
+
+        /// <summary>
+        /// Add exclude process name to the process filter rule.
+        /// </summary>
+        /// <param name="processNameMask">the process filter rule process name filter mask</param>
+        /// <param name="excludeProcessNameMask">the exclude process name mask</param>
+        /// <returns></returns>
+        [DllImport("FilterAPI.dll", SetLastError = true)]
+        public static extern bool AddExcludeProcessNameToProcessFilterRule(
+        [MarshalAs(UnmanagedType.LPWStr)] string processNameMask,
+        [MarshalAs(UnmanagedType.LPWStr)] string excludeProcessNameMask);
+
+        /// <summary>
+        /// Add exclude user name to the process filter rule.
+        /// </summary>
+        /// <param name="processNameMask">the process filter rule process name filter mask</param>
+        /// <param name="excludeUserNameMask">the exclude user name mask</param>
+        /// <returns></returns>
+        [DllImport("FilterAPI.dll", SetLastError = true)]
+        public static extern bool AddExcludeUserNameToProcessFilterRule(
+        [MarshalAs(UnmanagedType.LPWStr)] string processNameMask,
+        [MarshalAs(UnmanagedType.LPWStr)] string excludeUserNameMask);
 
         [DllImport("FilterAPI.dll", SetLastError = true)]
         public static extern bool RemoveProcessFilterRule(

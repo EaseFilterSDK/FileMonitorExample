@@ -30,6 +30,36 @@ namespace EaseFilter.FilterControl
         private string userName = string.Empty;
         private string registryKeyNameFilterMask = string.Empty;
 
+        List<string> excludeProcessNameList = new List<string>();
+        List<string> excludeUserNameList = new List<string>();
+        List<string> excludeKeyNameList = new List<string>();
+
+        /// <summary>
+        /// Exclude the process name to the registry filter rule.
+        /// </summary>
+        public List<string> ExcludeProcessNameList
+        {
+            get { return excludeProcessNameList; }
+            set { excludeProcessNameList = value; }
+        }
+
+        /// <summary>
+        /// Exclude the user name to the registry filter rule.
+        /// </summary>
+        public List<string> ExcludeUserNameList
+        {
+            get { return excludeUserNameList; }
+            set { excludeUserNameList = value; }
+        }
+
+        /// <summary>
+        /// Exclude the key name to the registry filter rule.
+        /// </summary>
+        public List<string> ExcludeKeyNameList
+        {
+            get { return excludeKeyNameList; }
+            set { excludeKeyNameList = value; }
+        }
         /// <summary>
         /// Control the registry access for the process with this process Id. 
         /// </summary>

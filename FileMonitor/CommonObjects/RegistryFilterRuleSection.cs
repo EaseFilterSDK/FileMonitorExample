@@ -130,6 +130,39 @@ namespace EaseFilter.CommonObjects
         }
 
         /// <summary>
+        /// if the process name matches the excludeProcessNames, the registry I/O will be skipped by filter driver.
+        /// seperate the multiple items with ';'
+        /// </summary>
+        [ConfigurationProperty("excludeProcessNames", IsRequired = false)]
+        public string ExcludeProcessNames
+        {
+            get { return (string)base["excludeProcessNames"]; }
+            set { base["excludeProcessNames"] = value; }
+        }
+
+        /// <summary>
+        /// if the user name matches the excludeUserNames, the registry I/O will be skipped by filter driver.
+        /// seperate the multiple items with ';'
+        /// </summary>
+        [ConfigurationProperty("excludeUserNames", IsRequired = false)]
+        public string ExcludeUserNames
+        {
+            get { return (string)base["excludeUserNames"]; }
+            set { base["excludeUserNames"] = value; }
+        }
+
+        /// <summary>
+        /// if the key name matches the excludeKeyNames, the registry I/O will be skipped by filter driver.
+        /// seperate the multiple items with ';'
+        /// </summary>
+        [ConfigurationProperty("excludeKeyNames", IsRequired = false)]
+        public string ExcludeKeyNames
+        {
+            get { return (string)base["excludeKeyNames"]; }
+            set { base["excludeKeyNames"] = value; }
+        }
+
+        /// <summary>
         /// The the flag to control how to access the registry for the matched process or user
         /// </summary>
         [ConfigurationProperty("accessFlag", IsRequired = true)]
@@ -167,6 +200,9 @@ namespace EaseFilter.CommonObjects
             dest.ProcessNameFilterMask = ProcessNameFilterMask;
             dest.RegistryKeyNameFilterMask = RegistryKeyNameFilterMask;
             dest.UserName = UserName;
+            dest.ExcludeProcessNames = ExcludeProcessNames;
+            dest.ExcludeUserNames = ExcludeUserNames;
+            dest.ExcludeKeyNames = ExcludeKeyNames;
             dest.AccessFlag = AccessFlag;
             dest.RegCallbackClass = RegCallbackClass;
             dest.IsExcludeFilter = IsExcludeFilter;
@@ -185,6 +221,42 @@ namespace EaseFilter.CommonObjects
             else
             {
                 registryFilter.ProcessId = 0;
+            }
+
+            string[] excludeProcessNames = ExcludeProcessNames.Split(new char[] { ';' });
+            if (excludeProcessNames.Length > 0)
+            {
+                foreach (string excludeProcessName in excludeProcessNames)
+                {
+                    if (excludeProcessName.Trim().Length > 0)
+                    {
+                        registryFilter.ExcludeProcessNameList.Add(excludeProcessName);
+                    }
+                }
+            }
+
+            string[] excludeUserNames = ExcludeUserNames.Split(new char[] { ';' });
+            if (excludeUserNames.Length > 0)
+            {
+                foreach (string excludeUserName in excludeUserNames)
+                {
+                    if (excludeUserName.Trim().Length > 0)
+                    {
+                        registryFilter.ExcludeUserNameList.Add(excludeUserName);
+                    }
+                }
+            }
+
+            string[] excludeKeyNames = ExcludeKeyNames.Split(new char[] { ';' });
+            if (excludeKeyNames.Length > 0)
+            {
+                foreach (string excludeKeyName in excludeKeyNames)
+                {
+                    if (excludeKeyName.Trim().Length > 0)
+                    {
+                        registryFilter.ExcludeKeyNameList.Add(excludeKeyName);
+                    }
+                }
             }
 
             registryFilter.ProcessNameFilterMask = ProcessNameFilterMask;

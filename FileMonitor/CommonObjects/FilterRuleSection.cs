@@ -469,6 +469,11 @@ namespace EaseFilter.CommonObjects
                 fileFilter.EnableMonitorEventBuffer = EnableMonitorEventBuffer;
                 fileFilter.EncryptWriteBufferSize = EncryptWriteBufferSize;
 
+                if ((fileFilter.AccessFlags & FilterAPI.AccessFlag.ALLOW_COPY_PROTECTED_FILES_OUT) > 0)
+                {
+                    fileFilter.EnableBlockSaveAs = true;
+                }
+
                 string[] excludeFileFilterMasks = ExcludeFileFilterMasks.Split(new char[] { ';' });
                 if (excludeFileFilterMasks.Length > 0)
                 {

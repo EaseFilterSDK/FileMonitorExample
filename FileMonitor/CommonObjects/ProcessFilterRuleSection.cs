@@ -109,6 +109,31 @@ namespace EaseFilter.CommonObjects
             set { base["processId"] = value; }
         }
 
+
+        /// <summary>
+        /// if the file path matches the includeFileFilterMask and the excludeProcessNames is not empty,
+        /// the IOs from the process name which matches the excludeProcessNames will be skipped by filter driver.
+        /// seperate the multiple items with ';'
+        /// </summary>
+        [ConfigurationProperty("excludeProcessNames", IsRequired = false)]
+        public string ExcludeProcessNames
+        {
+            get { return (string)base["excludeProcessNames"]; }
+            set { base["excludeProcessNames"] = value; }
+        }
+
+        /// <summary>
+        /// if the file path matches the includeFileFilterMask and the excludeUserNames is not empty,
+        /// the IOs from the user name which matches the excludeUserNames will be skipped by filter driver.
+        /// seperate the multiple items with ';'
+        /// </summary>
+        [ConfigurationProperty("excludeUserNames", IsRequired = false)]
+        public string ExcludeUserNames
+        {
+            get { return (string)base["excludeUserNames"]; }
+            set { base["excludeUserNames"] = value; }
+        }
+
         /// <summary>
         /// The file access rights to the processes which match the processNameFilterMask
         /// the format is "FileMask!accessFalg;" e.g. "c:\sandbox\*!12356;"
@@ -135,6 +160,8 @@ namespace EaseFilter.CommonObjects
             ProcessFilterRule dest = new ProcessFilterRule();
             dest.ProcessId = ProcessId;
             dest.ProcessNameFilterMask = ProcessNameFilterMask;
+            dest.ExcludeProcessNames = ExcludeProcessNames;
+            dest.ExcludeUserNames = ExcludeUserNames;
             dest.FileAccessRights = FileAccessRights;
             dest.ControlFlag = ControlFlag;
 
@@ -154,6 +181,30 @@ namespace EaseFilter.CommonObjects
             else
             {
                 processFilter.ProcessId = 0;
+            }
+
+            string[] excludeProcessNames = ExcludeProcessNames.Split(new char[] { ';' });
+            if (excludeProcessNames.Length > 0)
+            {
+                foreach (string excludeProcessName in excludeProcessNames)
+                {
+                    if (excludeProcessName.Trim().Length > 0)
+                    {
+                        processFilter.ExcludeProcessNameList.Add(excludeProcessName);
+                    }
+                }
+            }
+
+            string[] excludeUserNames = ExcludeUserNames.Split(new char[] { ';' });
+            if (excludeUserNames.Length > 0)
+            {
+                foreach (string excludeUserName in excludeUserNames)
+                {
+                    if (excludeUserName.Trim().Length > 0)
+                    {
+                        processFilter.ExcludeUserNameList.Add(excludeUserName);
+                    }
+                }
             }
 
             processFilter.ProcessNameFilterMask = ProcessNameFilterMask;      

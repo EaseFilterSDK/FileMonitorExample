@@ -314,6 +314,17 @@ namespace EaseFilter.FilterControl
             return true;
         }
 
+        public bool ResetConfigData(ref string lastError)
+        {
+            if (!FilterAPI.ResetConfigData())
+            {
+                lastError = "ResetConfigData failed:" + FilterAPI.GetLastErrorMessage();
+                return false;
+            }
+
+            return true;
+        }
+
         public bool SendConfigSettingsToFilter(ref string lastError)
         {
             try
@@ -408,6 +419,31 @@ namespace EaseFilter.FilterControl
                             }
                         }
 
+                        foreach (string excludeProcessName in processFilter.ExcludeProcessNameList)
+                        {
+                            if (excludeProcessName.Trim().Length > 0)
+                            {
+                                if (!FilterAPI.AddExcludeProcessNameToProcessFilterRule(processFilter.ProcessNameFilterMask, excludeProcessName.Trim()))
+                                {
+                                    lastError = "AddExcludeProcessNameToProcessFilterRule " + excludeProcessName + " failed:" + FilterAPI.GetLastErrorMessage();
+                                    return false;
+                                }
+                            }
+                        }
+
+                        foreach (string excludeUserName in processFilter.ExcludeUserNameList)
+                        {
+                            if (excludeUserName.Trim().Length > 0)
+                            {
+                                if (!FilterAPI.AddExcludeUserNameToProcessFilterRule(processFilter.ProcessNameFilterMask, excludeUserName.Trim()))
+                                {
+                                    lastError = "AddExcludeUserNameToProcessFilterRule " + excludeUserName + " failed:" + FilterAPI.GetLastErrorMessage();
+                                    return false;
+                                }
+                            }
+                        }
+
+
                         foreach (KeyValuePair<string, uint> entry in processFilter.FileAccessRights)
                         {
                             string fileNameMask = entry.Key;
@@ -461,6 +497,46 @@ namespace EaseFilter.FilterControl
                             lastError = "AddRegistryFilterRule failed:" + FilterAPI.GetLastErrorMessage();
                             return false;
                         }
+
+                        foreach (string excludeProcessName in registryFilter.ExcludeProcessNameList)
+                        {
+                            if (excludeProcessName.Trim().Length > 0)
+                            {
+                                if (!FilterAPI.AddExcludeProcessNameToRegistryFilterRule(
+                                    registryFilter.ProcessNameFilterMask,registryFilter.RegistryKeyNameFilterMask, excludeProcessName.Trim()))
+                                {
+                                    lastError = "AddExcludeProcessNameToRegistryFilterRule " + excludeProcessName + " failed:" + FilterAPI.GetLastErrorMessage();
+                                    return false;
+                                }
+                            }
+                        }
+
+                        foreach (string excludeUserName in registryFilter.ExcludeUserNameList)
+                        {
+                            if (excludeUserName.Trim().Length > 0)
+                            {
+                                if (!FilterAPI.AddExcludeUserNameToRegistryFilterRule(
+                                    registryFilter.ProcessNameFilterMask, registryFilter.RegistryKeyNameFilterMask, excludeUserName.Trim()))
+                                {
+                                    lastError = "AddExcludeUserNameToRegistryFilterRule " + excludeUserName + " failed:" + FilterAPI.GetLastErrorMessage();
+                                    return false;
+                                }
+                            }
+                        }
+
+                        foreach (string excludeKeyName in registryFilter.ExcludeKeyNameList)
+                        {
+                            if (excludeKeyName.Trim().Length > 0)
+                            {
+                                if (!FilterAPI.AddExcludeKeyNameToRegistryFilterRule(
+                                    registryFilter.ProcessNameFilterMask, registryFilter.RegistryKeyNameFilterMask, excludeKeyName.Trim()))
+                                {
+                                    lastError = "AddExcludeKeyNameToRegistryFilterRule " + excludeKeyName + " failed:" + FilterAPI.GetLastErrorMessage();
+                                    return false;
+                                }
+                            }
+                        }
+
                     }
                     else //this is file filter.
                     {
