@@ -54,6 +54,9 @@ namespace EaseFilter.FilterControl
         List<uint> includeProcessIdList = new List<uint>();
         List<uint> excludeProcessIdList = new List<uint>();
 
+        FilterAPI.BooleanConfig globalBooleanConfig = FilterAPI.BooleanConfig.ENABLE_SET_FILE_ID_INFO | FilterAPI.BooleanConfig.ENABLE_SET_USER_PROCESS_NAME;
+
+
         public static string licenseKey = string.Empty;
 
         public FilterControl()
@@ -64,7 +67,11 @@ namespace EaseFilter.FilterControl
         /// <summary>
         /// The global boolean config setting
         /// </summary>
-        public uint BooleanConfig { get; set; }
+        public FilterAPI.BooleanConfig BooleanConfig
+        {
+            get { return globalBooleanConfig; }
+            set { globalBooleanConfig = value; }
+        }
         /// <summary>
         /// The volume control flag, reference FilterAPI.VolumeControlFlag
         /// </summary>
@@ -267,6 +274,22 @@ namespace EaseFilter.FilterControl
                 if (filterRuleList.ContainsKey(filter.FilterId))
                 {
                     filterRuleList.Remove(filter.FilterId);
+
+                    if (filter.FilterType == FilterAPI.FilterType.PROCESS_FILTER)
+                    {
+                        ProcessFilter processFilter = (ProcessFilter)filter;
+                        FilterAPI.RemoveProcessFilterRule((uint)processFilter.ProcessNameFilterMask.Length * 2, processFilter.ProcessNameFilterMask);
+                    }
+                    else if(filter.FilterType == FilterAPI.FilterType.PROCESS_FILTER)
+                    {
+                        RegistryFilter registryFilter = (RegistryFilter)filter;
+                        FilterAPI.RemoveRegistryFilterRuleByProcessName((uint)registryFilter.ProcessNameFilterMask.Length, registryFilter.ProcessNameFilterMask);
+                    }
+                    else
+                    {
+                        FileFilter fileFilter = (FileFilter)filter;
+                        FilterAPI.RemoveFilterRule(fileFilter.IncludeFileFilterMask);
+                    }
                 }
             }
         }
@@ -280,6 +303,8 @@ namespace EaseFilter.FilterControl
             {
                 filterRuleList.Clear();
             }
+
+            FilterAPI.ResetConfigData();
         }
 
         /// <summary>
@@ -352,8 +377,8 @@ namespace EaseFilter.FilterControl
                     lastError = "SetFilterType " + filterType.ToString() + " failed:" + FilterAPI.GetLastErrorMessage();
                     return false;
                 }
-
-                if (BooleanConfig > 0 && !FilterAPI.SetBooleanConfig(BooleanConfig))
+                
+                if (BooleanConfig > 0 && !FilterAPI.SetBooleanConfig((uint)BooleanConfig))
                 {
                     lastError = "SetBooleanConfig " + BooleanConfig + " failed:" + FilterAPI.GetLastErrorMessage();
                     return false;
@@ -444,7 +469,7 @@ namespace EaseFilter.FilterControl
                         }
 
 
-                        foreach (KeyValuePair<string, uint> entry in processFilter.FileAccessRights)
+                        foreach (KeyValuePair<string, uint> entry in processFilter.FileAccessRightList)
                         {
                             string fileNameMask = entry.Key;
                             uint accessFlag = entry.Value;
@@ -470,8 +495,8 @@ namespace EaseFilter.FilterControl
 
                                 if (processFilter.MonitorFileIOEventFilter > 0 || processFilter.ControlFileIOEventFilter > 0)
                                 {
-                                    ulong registerMonitorIOToFilter = processFilter.MonitorFileIOEventFilter;
-                                    ulong registerControlIOToFilter = processFilter.ControlFileIOEventFilter;
+                                    ulong registerMonitorIOToFilter = (ulong)processFilter.MonitorFileIOEventFilter;
+                                    ulong registerControlIOToFilter = (ulong)processFilter.ControlFileIOEventFilter;
 
                                     if (!FilterAPI.AddFileCallbackIOToProcessByName((uint)processFilter.ProcessNameFilterMask.Length * 2,
                                         processFilter.ProcessNameFilterMask, (uint)fileNameMask.Length * 2, fileNameMask.Trim(), registerMonitorIOToFilter, registerControlIOToFilter, processFilter.FilterId))
@@ -559,13 +584,13 @@ namespace EaseFilter.FilterControl
                             return false;
                         }
 
-                        if (fileFilter.MonitorFileIOEventFilter > 0 && !FilterAPI.RegisterMonitorIOToFilterRule(fileFilter.IncludeFileFilterMask, fileFilter.MonitorFileIOEventFilter))
+                        if (fileFilter.MonitorFileIOEventFilter > 0 && !FilterAPI.RegisterMonitorIOToFilterRule(fileFilter.IncludeFileFilterMask, (ulong)fileFilter.MonitorFileIOEventFilter))
                         {
                             lastError = "Register monitor IO:" + fileFilter.MonitorFileIOEventFilter.ToString("X") + " failed:" + FilterAPI.GetLastErrorMessage();
                             return false;
                         }
 
-                        if (fileFilter.ControlFileIOEventFilter > 0 && !FilterAPI.RegisterControlIOToFilterRule(fileFilter.IncludeFileFilterMask, fileFilter.ControlFileIOEventFilter))
+                        if (fileFilter.ControlFileIOEventFilter > 0 && !FilterAPI.RegisterControlIOToFilterRule(fileFilter.IncludeFileFilterMask, (ulong)fileFilter.ControlFileIOEventFilter))
                         {
                             lastError = "Register control IO:" + fileFilter.ControlFileIOEventFilter.ToString("X") + " failed:" + FilterAPI.GetLastErrorMessage();
                             return false;
@@ -626,7 +651,7 @@ namespace EaseFilter.FilterControl
                                 }
                             }
 
-                        }
+                        }                       
 
                         if (fileFilter.BooleanConfig > 0 && !FilterAPI.AddBooleanConfigToFilterRule(fileFilter.IncludeFileFilterMask, fileFilter.BooleanConfig))
                         {
@@ -711,38 +736,16 @@ namespace EaseFilter.FilterControl
                             }
                         }
 
-                        foreach (KeyValuePair<string, uint> entry in fileFilter.ProcessNameAccessRightList)
+                        foreach (KeyValuePair<string, ProcessRightInfo> entry in fileFilter.TrustedProcessAccessRightList)
                         {
-                            string processName = entry.Key;
-                            uint accessFlags = entry.Value;
+                            ProcessRightInfo trustedProcessInfo = entry.Value;
 
-                            if (!FilterAPI.AddProcessRightsToFilterRule(fileFilter.IncludeFileFilterMask, processName.Trim(), accessFlags))
+
+                            if (!FilterAPI.AddProcessRightsToFilterRule(fileFilter.IncludeFileFilterMask, trustedProcessInfo.processNameFilterMask, 
+                                trustedProcessInfo.accessFlags, trustedProcessInfo.certificateName, trustedProcessInfo.imageSha256Hash))
                             {
-                                lastError = "AddProcessRightsToFilterRule " + fileFilter.IncludeFileFilterMask + ",processName:" + processName + ",accessFlags:" + accessFlags + " failed:" + FilterAPI.GetLastErrorMessage();
-                                return false;
-                            }
-                        }
-
-                        foreach (KeyValuePair<byte[], uint> entry in fileFilter.Sha256ProcessAccessRightList)
-                        {
-                            byte[] processSha256 = entry.Key;
-                            uint accessFlags = entry.Value;
-
-                            if (!FilterAPI.AddSha256ProcessAccessRightsToFilterRule(fileFilter.IncludeFileFilterMask, processSha256, (uint)processSha256.Length, accessFlags))
-                            {
-                                lastError = "AddProcessSha256RightsToFilterRule " + fileFilter.IncludeFileFilterMask + ",accessFlags:" + accessFlags + " failed:" + FilterAPI.GetLastErrorMessage();
-                                return false;
-                            }
-                        }
-
-                        foreach (KeyValuePair<string, uint> entry in fileFilter.SignedProcessAccessRightList)
-                        {
-                            string certificateName = entry.Key;
-                            uint accessFlags = entry.Value;
-
-                            if (!FilterAPI.AddSignedProcessAccessRightsToFilterRule(fileFilter.IncludeFileFilterMask, certificateName.Trim(),(uint)certificateName.Length*2, accessFlags))
-                            {
-                                lastError = "AddSignedProcessAccessRightsToFilterRule " + fileFilter.IncludeFileFilterMask + ",certificateName:" + certificateName + ",accessFlags:" + accessFlags + " failed:" + FilterAPI.GetLastErrorMessage();
+                                lastError = "AddProcessRightsToFilterRule " + fileFilter.IncludeFileFilterMask + ",certificateName:" + trustedProcessInfo.certificateName
+                                    + ", sha256:" + trustedProcessInfo.imageSha256Hash + " failed:" + FilterAPI.GetLastErrorMessage();
                                 return false;
                             }
                         }
@@ -760,7 +763,7 @@ namespace EaseFilter.FilterControl
                             }
                         }
 
-                        foreach (KeyValuePair<string, uint> entry in fileFilter.userAccessRightList)
+                        foreach (KeyValuePair<string, uint> entry in fileFilter.UserAccessRightList)
                         {
                             string userName = entry.Key;
                             uint accessFlags = entry.Value;
@@ -899,15 +902,15 @@ namespace EaseFilter.FilterControl
                 }
                 else if (filterRuleList.ContainsKey(messageSend.FilterRuleId))
                 {
-                    Filter registerFilter = filterRuleList[messageSend.FilterRuleId];
+                    Filter filterHandler = filterRuleList[messageSend.FilterRuleId];
 
                     if (replyDataPtr.ToInt64() == 0)
                     {
-                        registerFilter.SendNotification(messageSend);
+                        filterHandler.SendNotification(messageSend);
                     }
                     else
                     {
-                        ret = registerFilter.ReplyMessage(messageSend, replyDataPtr);
+                        ret = filterHandler.ReplyMessage(messageSend, replyDataPtr);
                     }
 
                 }
