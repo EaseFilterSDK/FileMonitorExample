@@ -545,7 +545,7 @@ namespace EaseFilter.FilterControl
 
             try
             {
-                FilterAPI.MessageReplyData messageReply = (FilterAPI.MessageReplyData)Marshal.PtrToStructure(replyDataPtr, typeof(FilterAPI.MessageReplyData));
+                FilterAPI.MessageReplyData messageReply = (FilterAPI.MessageReplyData)Marshal.PtrToStructure(replyDataPtr, typeof(FilterAPI.MessageReplyData));              
                 if (messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_REQUEST_ENCRYPTION_IV_AND_KEY
                     || messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_REQUEST_ENCRYPTION_IV_AND_KEY_AND_TAGDATA)
                 {
@@ -555,6 +555,11 @@ namespace EaseFilter.FilterControl
                         || messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.FILTER_REPARSE_FILE_OPEN_REQUEST)
                 {
                     retVal = ReparseFilterHandler(messageSend, ref messageReply);
+                }
+                else if (messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.MESSAGE_TYPE_RESTORE_FILE_TO_CACHE
+                        || messageSend.FilterCommand == (uint)FilterAPI.FilterCommand.MESSAGE_TYPE_RESTORE_BLOCK_OR_FILE)
+                {
+                    return StubFileHandler(messageSend, replyDataPtr);
                 }
                 else
                 {
@@ -684,6 +689,8 @@ namespace EaseFilter.FilterControl
                 IsRemoteAccess = true;
                 RemoteIp = Encoding.Unicode.GetString(messageSend.RemoteIP);
             }
+
+            ReturnStatus = NtStatus.Status.Success;
 
         }
 
@@ -957,6 +964,14 @@ namespace EaseFilter.FilterControl
                 }
             }
 
+            if (((uint)FilterAPI.MessageType.PRE_CREATE == messageSend.MessageType))
+            {
+                if ((messageSend.Disposition & (uint)WinData.Disposition.FILE_OPEN) == 0 )
+                {
+                    isOpenWithCreateOrOverWriteAccess = true;
+                }
+            }
+
             if ((messageSend.InfoClass & (uint)FilterAPI.FILE_COPY_FLAG.CREATE_FLAG_FILE_SOURCE_OPEN_FOR_COPY) > 0)
             {
                 isFileCopySource = true;
@@ -981,6 +996,10 @@ namespace EaseFilter.FilterControl
         /// It indicates that the new file was created if it is true.
         /// </summary>
         public bool isNewFileCreated { get; set; }
+        /// <summary>
+        /// It indicates that the new file is going to be created if it is true.
+        /// </summary>
+        public bool isOpenWithCreateOrOverWriteAccess { get; set; }
         /// <summary>
         /// It indicates that this is file copy source file open.
         /// </summary>
@@ -1249,6 +1268,83 @@ namespace EaseFilter.FilterControl
                 return message;
             }
             
+        }
+    }
+
+    public class FileMemoryMappedEventArgs : FileIOEventArgs
+    {
+        public FileMemoryMappedEventArgs(FilterAPI.MessageSendData messageSend)
+            : base(messageSend)
+        {
+            if (messageSend.DataBufferLength > 0)
+            {
+                GCHandle pinnedPacket = GCHandle.Alloc(DataBuffer, GCHandleType.Pinned);
+                FilterAPI.AcquireForSectionSynchronization memoryMappingInfo = (FilterAPI.AcquireForSectionSynchronization)Marshal.PtrToStructure(
+                    pinnedPacket.AddrOfPinnedObject(), typeof(FilterAPI.AcquireForSectionSynchronization));
+
+                SyncType = memoryMappingInfo.SyncType;
+                PageProtection = memoryMappingInfo.PageProtection;
+                StructureSize = memoryMappingInfo.StructureSize;
+                SizeReturned = memoryMappingInfo.SizeReturned;
+                SYNC_OUTPUT_Flags = memoryMappingInfo.SYNC_OUTPUT_Flags;
+                DesiredReadAlignment = memoryMappingInfo.DesiredReadAlignment;
+                Flags = memoryMappingInfo.Flags;
+                AllocationAttributes = memoryMappingInfo.AllocationAttributes;
+
+                pinnedPacket.Free();
+            }
+        }
+
+        /// <summary>
+        ///Type of synchronization requested for the section. 
+        ///Set to SyncTypeCreateSection if a section is being created; SyncTypeOther otherwise.
+        /// </summary>
+        public uint SyncType { get; set; }
+       /// <summary>
+       /// 
+       /// </summary>
+        public FilterAPI.PAGE_PROTECTION_FLAGS PageProtection { get; set; }
+        /// <summary>
+        /// The size of the structure FS_FILTER_SECTION_SYNC_OUTPUT which contains information describing the attributes of the section that is being created..
+        /// </summary>
+        public uint StructureSize { get; set; }
+        /// <summary>
+        /// The size of the structure which has been successfully populated with information on completion.
+        /// </summary>
+        public uint SizeReturned { get; set; }
+        /// <summary>
+        /// Specifies the support for synchronization. The following values can be used:
+        /// FS_FILTER_SECTION_SYNC_SUPPORTS_ASYNC_PARALLEL_IO 0x00000001;
+        /// FS_FILTER_SECTION_SYNC_SUPPORTS_DIRECT_MAP_DATA	0x00000002;
+        /// FS_FILTER_SECTION_SYNC_SUPPORTS_DIRECT_MAP_IMAGE 0x00000004;
+        /// </summary>
+        public uint SYNC_OUTPUT_Flags { get; set; }
+        /// <summary>
+        /// Specifies the optimal size for efficient reads. Faults from the section will attempt, 
+        /// but not guarantee, to read in multiples of this size. This value should be a multiple of PAGE_SIZE.
+        /// </summary>
+        public uint DesiredReadAlignment { get; set; }
+        /// <summary>
+        /// When SyncType is SyncTypeCreateSection, Flags can be one of the following values:
+        //FS_FILTER_SECTION_SYNC_IN_FLAG_DONT_UPDATE_LAST_ACCESS(0x00000001)
+        //FS_FILTER_SECTION_SYNC_IN_FLAG_DONT_UPDATE_LAST_WRITE(0x00000002)
+        /// </summary>
+        public uint Flags { get; set; }
+        /// <summary>
+        /// // Specified if SyncType is SyncTypeCreateSection
+        /// </summary>
+        public uint AllocationAttributes { get; set; }
+
+        /// <summary>
+        /// The description of the IO args
+        /// </summary>
+        public override string Description
+        {
+            get
+            {
+                return "FileMemoryMapping PageProtection Flags:" + PageProtection.ToString();
+            }
+
         }
     }
 

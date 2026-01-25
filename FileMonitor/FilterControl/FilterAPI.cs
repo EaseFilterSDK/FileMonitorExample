@@ -211,6 +211,10 @@ namespace EaseFilter.FilterControl
             /// if it is true it will set the userName and processName for the message_send_data_structure.
             /// </summary>
             ENABLE_SET_USER_PROCESS_NAME = 0x00200000,
+            /// <summary>
+            /// if it is true it will append the header to the file as the meta data of the stub file.
+            /// </summary>
+            ENABLE_STUB_FILE_HEADER = 0x00800000,
 
 
         }
@@ -220,6 +224,38 @@ namespace EaseFilter.FilterControl
         /// </summary>
         public enum FilterCommand
         {
+            /// <summary>
+            /// request the read data back with block data or whole cache file name.
+            /// </summary>
+            MESSAGE_TYPE_RESTORE_BLOCK_OR_FILE = 0x00000001,
+            /// <summary>
+            /// request to download the data to the original folder.
+            /// </summary>
+            MESSAGE_TYPE_RESTORE_FILE_TO_ORIGINAL_FOLDER = 0x00000002,
+            /// <summary>
+            /// request the directory file list.
+            /// </summary>
+            MESSAGE_TYPE_GET_FILE_LIST = 0x00000004,
+            /// <summary>
+            /// request to download whole file to the cache folder.
+            /// </summary>
+            MESSAGE_TYPE_RESTORE_FILE_TO_CACHE = 0x00000008,
+            /// <summary>
+            /// send the notification event of the file changed.
+            /// </summary>
+            MESSAGE_TYPE_SEND_EVENT_NOTIFICATION = 0x00000010,
+            /// <summary>
+            /// send the notification event of the file was deleted.
+            /// </summary>
+            MESSAGE_TYPE_DELETE_FILE = 0x00000020,
+            /// <summary>
+            /// send the notification event of the file was renamed.
+            /// </summary>
+            MESSAGE_TYPE_RENAME_FILE = 0x00000040,
+            /// <summary>
+            /// send the file name of the message was stored.
+            /// </summary>
+            MESSAGE_TYPE_SEND_MESSAGE_FILENAME = 0x00000080,
             /// <summary>
             /// send the notification event of the file was changed.
             /// </summary>
@@ -327,11 +363,7 @@ namespace EaseFilter.FilterControl
             /// <summary>
             /// request the reparse file open.
             /// </summary>
-            FILTER_REPARSE_FILE_OPEN_REQUEST = 0x00010023,
-        }
-
-        public enum IOEventName
-        {
+            FILTER_REPARSE_FILE_OPEN_REQUEST = 0x00010023,       
             /// <summary>
             /// Fires this event before the file create IO was going down to the file system.
             /// </summary>
@@ -503,7 +535,15 @@ namespace EaseFilter.FilterControl
             /// <summary>
             /// Fires this event after the file close IO was returned from the file system.
             /// </summary>
-            IOPostFileClose,               
+            IOPostFileClose,
+            /// <summary>
+            /// Fires this event before the file was mapped to memory.
+            /// </summary>
+            IOPreAcquireSection = 0x0002002b,
+            /// <summary>
+            /// Fires this event after the file was naooed to memory.
+            /// </summary>
+            IOPostAcquireSection = 0x0002002c,
         }
      
         /// <summary>
@@ -717,13 +757,14 @@ namespace EaseFilter.FilterControl
             /// </summary>
             ALLOW_READ_ENCRYPTED_FILES = 0x00200000,
             /// <summary>
-            /// Allow the application to create a new file after it opened the protected file.
+            /// If the flag is turned off, the application will be blocked from creating a new file after opening a protected file 
+            /// when the filter rule’s boolean configuration ENABLE_BLOCK_SAVE_AS_FLAG is enabled.
             /// </summary>
             ALLOW_ALL_SAVE_AS = 0x00400000,
             /// <summary>
-            /// Allow copy protected files out of the protected folder if ALLOW_ALL_SAVE_AS is enabled.
+            ///If the flag is turned off, copy-and-paste from Windows Explorer will be blocked. This applies only to Windows 11 or later versions.
             /// </summary>
-            ALLOW_COPY_PROTECTED_FILES_OUT = 0x00800000,
+            ALLOW_COPY_AND_PASTE = 0x00800000,
             /// <summary>
             /// Allow the file to be mapped into memory access.
             /// </summary>
@@ -995,7 +1036,79 @@ namespace EaseFilter.FilterControl
 
         }
 
-       
+        public enum PAGE_PROTECTION_FLAGS : uint
+        {
+            PAGE_NOACCESS = 0x00000001,
+            PAGE_READONLY = 0x00000002,
+            PAGE_READWRITE = 0x00000004,
+            PAGE_WRITECOPY = 0x00000008,
+            PAGE_EXECUTE = 0x00000010,
+            PAGE_EXECUTE_READ = 0x00000020,
+            PAGE_EXECUTE_READWRITE = 0x00000040,
+            PAGE_EXECUTE_WRITECOPY = 0x00000080,
+        }
+
+            /// <summary>
+            ///The AcquireForSectionSynchronization structure used for file memory-mapped access.
+            /// </summary>
+            [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        public struct AcquireForSectionSynchronization
+        {
+            /// <summary>
+            ///Type of synchronization requested for the section. 
+            ///Set to SyncTypeCreateSection if a section is being created; SyncTypeOther otherwise.
+            /// </summary>
+            public uint SyncType;
+            /// <summary>
+            /// Type of page protection requested for the section. Must be zero if SyncType is SyncTypeOther. 
+            /// Otherwise, one of the following flags, possibly ORed with PAGE_NOCACHE:
+            //PAGE_NOACCESS
+            //PAGE_READONLY
+            //PAGE_READWRITE
+            //PAGE_WRITECOPY
+            //PAGE_EXECUTE
+            //PAGE_EXECUTE_READ
+            //PAGE_EXECUTE_READWRITE
+            //PAGE_EXECUTE_WRITECOPY
+            //PAGE_GUARD
+            //PAGE_NOCACHE
+            //PAGE_WRITECOMBINE
+            /// </summary>
+            public PAGE_PROTECTION_FLAGS PageProtection;
+            /// <summary>
+            /// The size of the structure FS_FILTER_SECTION_SYNC_OUTPUT which contains information describing the attributes of the section that is being created..
+            /// </summary>
+            public uint StructureSize;
+            /// <summary>
+            /// The size of the structure which has been successfully populated with information on completion.
+            /// </summary>
+            public uint SizeReturned;
+            /// <summary>
+            /// Specifies the support for synchronization. The following values can be used:
+            /// FS_FILTER_SECTION_SYNC_SUPPORTS_ASYNC_PARALLEL_IO 0x00000001;
+            /// FS_FILTER_SECTION_SYNC_SUPPORTS_DIRECT_MAP_DATA	0x00000002;
+            /// FS_FILTER_SECTION_SYNC_SUPPORTS_DIRECT_MAP_IMAGE 0x00000004;
+            /// </summary>
+            public uint SYNC_OUTPUT_Flags;
+            /// <summary>
+            /// Specifies the optimal size for efficient reads. Faults from the section will attempt, 
+            /// but not guarantee, to read in multiples of this size. This value should be a multiple of PAGE_SIZE.
+            /// </summary>
+            public uint DesiredReadAlignment;
+            /// <summary>
+            /// When SyncType is SyncTypeCreateSection, Flags can be one of the following values:
+            //FS_FILTER_SECTION_SYNC_IN_FLAG_DONT_UPDATE_LAST_ACCESS(0x00000001)
+            //FS_FILTER_SECTION_SYNC_IN_FLAG_DONT_UPDATE_LAST_WRITE(0x00000002)
+            /// </summary>
+            public uint Flags;
+            /// <summary>
+            /// // Specified if SyncType is SyncTypeCreateSection
+            /// </summary>
+            public uint AllocationAttributes;
+
+        }
+
+
         /// <summary>
         /// the structure of the attached volume information
         /// </summary>
@@ -1091,13 +1204,14 @@ namespace EaseFilter.FilterControl
             FILTER_DATA_BUFFER_IS_UPDATED = 0x00000004,     //only for pre create,to reparse the file open to the new file name.	
             BLOCK_DATA_WAS_RETURNED = 0x00000008,           //Set this flag if return read block databuffer to filter.
             CACHE_FILE_WAS_RETURNED = 0x00000010,           //Set this flag if the stub file was restored.
+            REHYDRATE_FILE_VIA_CACHE_FILE = 0x00000020,     //Set this flag if the whole cache file was downloaded and you want to rehydrate the file from the cache file.
         }    
 
         /// <summary>
         /// this is the data structure which will be returned back to the filter driver.
         /// </summary>
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        public struct MessageReplyData
+        public  struct MessageReplyData
         {
             public uint MessageId;
             public uint MessageType;
@@ -1106,6 +1220,7 @@ namespace EaseFilter.FilterControl
             public uint DataBufferLength;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 65536)]
             public byte[] DataBuffer;
+
         }
 
         /// <summary>
@@ -1561,7 +1676,7 @@ namespace EaseFilter.FilterControl
         /// <summary>
         /// The maximum registry access right flag
         /// </summary>
-        public const uint MAX_REGITRY_ACCESS_FLAG = 0xFFFFFFFF;
+        public const uint MAX_REGISTRY_ACCESS_FLAG = 0xFFFFFFFF;
 
         /// <summary>
         /// Allow read registry access right
@@ -2242,6 +2357,28 @@ namespace EaseFilter.FilterControl
             [MarshalAs(UnmanagedType.LPWStr)]string fileName,
             ref uint ivSize,
             byte[] ivBuffer);
+
+        /// <summary>
+        /// Create virtual stub file
+        /// </summary>
+        /// <returns></returns>
+        [DllImport("FilterAPI.dll", SetLastError = true)]
+        public static extern bool CreateVirtualStubFile(
+            [MarshalAs(UnmanagedType.LPWStr)] string fileName,
+            long virtualFileSize,
+            uint tagDataSize,
+            byte[] tagData);
+
+        /// <summary>
+        /// Get virtual stub file information
+        /// </summary>
+        /// <returns></returns>
+        [DllImport("FilterAPI.dll", SetLastError = true)]
+        public static extern bool GetVirtualStubFileInfo(
+            [MarshalAs(UnmanagedType.LPWStr)] string fileName,
+            ref long virtualFileSize,
+            ref uint tagDataSize,
+            byte[] tagData);
 
         /// <summary>
         /// Get the computerId 
